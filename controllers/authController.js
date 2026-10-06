@@ -1,5 +1,5 @@
 // controllers/authController.js
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const { query } = require('../config/database');

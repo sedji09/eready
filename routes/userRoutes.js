@@ -8,7 +8,7 @@ isAuthenticated = typeof authModule === 'function'
   ? authModule
   : (authModule && (authModule.auth || authModule.isAuthenticated)) || ((req, res, next) => next());
 const multer = require('multer');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Ensure avatar upload directory exists
 const avatarsDir = path.join(__dirname, '../uploads/avatars');
