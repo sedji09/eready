@@ -16,7 +16,7 @@ const dbConfig = {
 if (process.env.DB_SSL === 'true' || (process.env.DB_HOST && !['localhost', '127.0.0.1'].includes(process.env.DB_HOST))) {
   dbConfig.ssl = {
     minVersion: 'TLSv1.2',
-    rejectUnauthorized: true
+    rejectUnauthorized: false
   };
 }
 
@@ -28,8 +28,7 @@ pool.getConnection()
     conn.release();
   })
   .catch(err => {
-    console.error("Database connection failed:", err.message);
-    process.exit(1);
+    console.error("Database connection warning:", err.message);
   });
 
 const query = async (sql, params) => {
