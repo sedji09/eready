@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - E-READY</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/images/emergency-kit.png" alt="Logo" onerror="this.style.display='none'">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/dashboard" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+
+      <button type="button" class="menu-item has-children" id="menu-emergency">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 7V5a3 3 0 013-3h4a3 3 0 013 3v2h3a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2h3zm2-2v2h6V5a1 1 0 00-1-1h-4a1 1 0 00-1 1z"/>
+          <path fill="#ffffff" d="M11 11v2H9a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2v-2a1 1 0 00-2 0z"/>
+        </svg>
+        <span>Emergency Stocks</span>
+        <svg class="chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M8 10l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <div class="submenu" id="submenu-emergency" style="display:block;">
+        <a href="/inventory/food-water" class="submenu-item">Food & Water</a>
+        <a href="/inventory/medicine" class="submenu-item">Medicine & First Aid</a>
+        <a href="/inventory/hygiene" class="submenu-item">Hygiene & Sanitation</a>
+        <a href="/inventory/clothes-beddings" class="submenu-item">Clothes & Beddings</a>
+        <a href="/inventory/tools-lights" class="submenu-item">Tools & Lights</a>
+      </div>
+
+      <a href="/distribution" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M3 3h11a1 1 0 0 1 1 1v4h3l3 4v6h-1a3 3 0 1 1-6 0H9a3 3 0 1 1-6 0H2V4a1 1 0 0 1 1-1zm1 2v8h10V5H4zm12 5v3h4v-1.586L18.586 10H16zm-8 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm10 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <span>Distribution</span>
+      </a>
+
+      <a href="/about" class="menu-item active">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>About us</span>
+      </a>
+    </nav>
+
+    <button id="logoutBtn" class="btn-logout">Log Out</button>
+  </div>
+
+  <div class="main-content">
+    <div id="alert-container"></div>
+
+    <div class="about-container">
+      <h1 class="about-title">About Us</h1>
+      
+      <div class="about-content">
+        <div class="about-image">
+          <img src="/images/emergency-kit.png" alt="E-READY Logo" onerror="this.style.display='none'">
+        </div>
+
+        <div class="about-text">
+          <p>
+            E-Ready is your digital tracker for all things disaster, prepared because readiness isn't 
+            just about knowing, it's about doing. From counting your go-bag essentials to keeping 
+            tabs on what's missing, we make it easy to see how ready you really are. No lectures, 
+            no long reads — just a smart, simple way to stay ahead of the storm.
+          </p>
+          <p class="about-slogan">E-Ready: Disaster <span>today?</span> Kaya 'to, <span>slay.</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/account.js"></script>
+  <script src="/js/about.js"></script>
+
+   <script>
+    (function(){
+      var btn = document.getElementById('menu-emergency');
+      var submenu = document.getElementById('submenu-emergency');
+      if(btn && submenu){
+        btn.addEventListener('click', function(){
+          var open = submenu.style.display !== 'none';
+          submenu.style.display = open ? 'none' : 'block';
+          btn.classList.toggle('open', !open);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

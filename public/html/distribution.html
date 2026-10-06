@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distribution - E-READY</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Enhanced button styling */
+    .btn-add { padding: 10px 18px; background:#8B2020; color:#fff; border:0; border-radius:8px; font-weight:600; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15); transition:all .2s ease; }
+    .btn-add:hover { background:#6B1818; transform: translateY(-1px); }
+
+    /* Modal polish overriding defaults if any */
+    #distModal { display:none; align-items:center; justify-content:center; }
+    #distModal.modal { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1200; }
+    #distModal .modal-content { width: 680px; max-width: 95vw; border-radius:12px; overflow:hidden; box-shadow:0 18px 48px rgba(0,0,0,.25); }
+    #distModal .modal-header { padding:16px 20px; background:#8B2020; color:#fff; }
+    #distModal .modal-header h3 { margin:0; font-size:20px; }
+    #distModal .modal-close { background:transparent; color:#fff; border:0; font-size:26px; cursor:pointer; }
+    #distModal .modal-body { background:#fff; padding:18px 20px; }
+    #distModal .modal-footer { display:flex; justify-content:flex-end; gap:10px; padding-top:8px; }
+    #distModal .btn-cancel { padding:10px 16px; background:#e0e0e0; border:0; margin-top: 10px; border-radius:6px; cursor:pointer; font-weight:600; }
+    #distModal .btn-cancel:hover { background:#d0d0d0; }
+    #distModal .btn-save { width:auto; padding:10px 18px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/images/emergency-kit.png" alt="Logo" onerror="this.style.display='none'">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/dashboard" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+
+      <button type="button" class="menu-item has-children" id="menu-emergency">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 7V5a3 3 0 013-3h4a3 3 0 013 3v2h3a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2h3zm2-2v2h6V5a1 1 0 00-1-1h-4a1 1 0 00-1 1z"/>
+          <path fill="#ffffff" d="M11 11v2H9a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2v-2a1 1 0 00-2 0z"/>
+        </svg>
+        <span>Emergency Stocks</span>
+        <svg class="chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M8 10l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <div class="submenu" id="submenu-emergency" style="display:block;">
+        <a href="/inventory/food-water" class="submenu-item">Food & Water</a>
+        <a href="/inventory/medicine" class="submenu-item">Medicine & First Aid</a>
+        <a href="/inventory/hygiene" class="submenu-item">Hygiene & Sanitation</a>
+        <a href="/inventory/clothes-beddings" class="submenu-item">Clothes & Beddings</a>
+        <a href="/inventory/tools-lights" class="submenu-item">Tools & Lights</a>
+      </div>
+
+      <a href="/distribution" class="menu-item active">
+        <svg viewBox="0 0 24 24"><path d="M3 3h11a1 1 0 0 1 1 1v4h3l3 4v6h-1a3 3 0 1 1-6 0H9a3 3 0 1 1-6 0H2V4a1 1 0 0 1 1-1zm1 2v8h10V5H4zm12 5v3h4v-1.586L18.586 10H16zm-8 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm10 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <span>Distribution</span>
+      </a>
+
+      <a href="/about" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>About us</span>
+      </a>
+    </nav>
+
+    <button id="logoutBtn" class="btn-logout">Log Out</button>
+  </div>
+
+  <div class="main-content">
+    <div id="alert-container"></div>
+
+
+    <!-- Modal -->
+    <div id="distModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Add Distribution</h3>
+          
+        </div>
+        <div class="modal-body">
+          <form id="distributionForm">
+            <div class="form-group">
+              <label for="dist_category">Category</label>
+              <select id="dist_category" required>
+                <option value="food_water">Food & Water</option>
+                <option value="medicine">Medicine & First Aid</option>
+                <option value="hygiene_sanitation">Hygiene & Sanitation</option>
+                <option value="clothes_beddings">Clothes & Beddings</option>
+                <option value="tools_lights">Tools & Lights</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="dist_batchNo">Batch / Item</label>
+              <select id="dist_batchNo" required>
+                <option value="" disabled selected>-- Select item --</option>
+              </select>
+              <small id="availableInfo" style="display:block;color:#555;margin-top:6px;">Available: -</small>
+            </div>
+            <div class="form-group">
+              <label for="dist_qty">Quantity</label>
+              <input type="number" id="dist_qty" min="1" required />
+            </div>
+            <div class="form-group">
+              <label for="dist_recipient">Recipient Name</label>
+              <input type="text" id="dist_recipient" placeholder="e.g., Juan Dela Cruz / Barangay A" />
+            </div>
+            <div class="form-group">
+              <label for="dist_contact">Recipient Contact (optional)</label>
+              <input type="text" id="dist_contact" placeholder="e.g., 09xx xxx xxxx" />
+            </div>
+            <div class="form-group">
+              <label for="dist_notes">Notes (optional)</label>
+              <input type="text" id="dist_notes" placeholder="e.g., Distributed to Barangay A" />
+            </div>
+            <div class="form-group">
+              <label>Distributor</label>
+              <input type="text" id="dist_distributor" placeholder="Auto: current user" disabled />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn-cancel" id="cancelDist">Cancel</button>
+              <button type="submit" class="btn-save">Distribute</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="history-header">
+      <h2 class="page-title" style="margin-top:0;">Distribution History</h2>
+    </div>
+    <div class="history-toolbar">
+      <div class="history-controls">
+        <div class="control-group">
+          <label for="historySort">Sort By</label>
+          <div class="input-with-icon">
+            <svg class="input-icon sort-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+            </svg>
+            <select id="historySort">
+              <option value="date_desc">Date (Newest)</option>
+              <option value="date_asc">Date (Oldest)</option>
+              <option value="quantity_desc">Quantity (High → Low)</option>
+              <option value="quantity_asc">Quantity (Low → High)</option>
+            </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="historySearch">Search</label>
+          <div class="input-with-icon">
+            <svg class="input-icon search-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.71.71l.27.28v.79l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/>
+            </svg>
+            <input type="text" id="historySearch" placeholder="Search by item, recipient, distributor..." />
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="historyCategoryFilter">Category</label>
+          <div class="input-with-icon">
+            <svg class="input-icon category-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M3 5a2 2 0 012-2h5l2 2h9v12a2 2 0 01-2 2h-5l-2-2H5a2 2 0 01-2-2zm2 0v12h6.17l2 2H19V7h-6.17l-2-2z"/>
+              <path fill="currentColor" d="M17 10h-5v2h5zm0 4h-5v2h5z"/>
+            </svg>
+            <select id="historyCategoryFilter">
+              <option value="">All</option>
+              <option value="Food & Water">Food & Water</option>
+              <option value="Medicine & First Aid">Medicine & First Aid</option>
+              <option value="Hygiene & Sanitation">Hygiene & Sanitation</option>
+              <option value="Clothes & Beddings">Clothes & Beddings</option>
+              <option value="Tools & Lights">Tools & Lights</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="history-actions">
+        <button id="openDistModal" class="btn-add">Add Distribution</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Batch No</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Distributor</th>
+            <th>Recipient</th>
+            <th>Contact</th>
+            <th>Notes</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="10" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var btn = document.getElementById('menu-emergency');
+      var submenu = document.getElementById('submenu-emergency');
+      if(btn && submenu){
+        btn.addEventListener('click', function(){
+          var open = submenu.style.display !== 'none';
+          submenu.style.display = open ? 'none' : 'block';
+          btn.classList.toggle('open', !open);
+        });
+      }
+    })();
+
+    const CATEGORY_ENDPOINT = {
+      food_water: '/api/inventory/food-water',
+      medicine: '/api/inventory/medicine',
+      hygiene_sanitation: '/api/inventory/hygiene',
+      clothes_beddings: '/api/inventory/clothes-beddings',
+      tools_lights: '/api/inventory/tools-lights',
+    };
+    const CATEGORY_LABEL_LOOKUP = {
+      foodwater: 'Food & Water',
+      foodandwater: 'Food & Water',
+      foodwatercategory: 'Food & Water',
+      food_water: 'Food & Water',
+      medicine: 'Medicine & First Aid',
+      medicinefirstaid: 'Medicine & First Aid',
+      medicine_first_aid: 'Medicine & First Aid',
+      hygiene: 'Hygiene & Sanitation',
+      hygienesanitation: 'Hygiene & Sanitation',
+      hygiene_sanitation: 'Hygiene & Sanitation',
+      clothesbeddings: 'Clothes & Beddings',
+      clothsandbeddings: 'Clothes & Beddings',
+      clothes_beddings: 'Clothes & Beddings',
+      toolslights: 'Tools & Lights',
+      toolsandlights: 'Tools & Lights',
+      tools_lights: 'Tools & Lights'
+    };
+
+    function unwrapArray(json){
+      if (Array.isArray(json)) return json;
+      if (json && Array.isArray(json.data)) return json.data;
+      if (json && Array.isArray(json.items)) return json.items;
+      if (json && Array.isArray(json.rows)) return json.rows;
+      return [];
+    }
+
+    function normalizeRow(row){
+      const batch_no = row.batch_no ?? row.batchNo ?? row.id ?? row.batch ?? null;
+      const item_name = row.item_name ?? row.itemName ?? row.name ?? row.item ?? 'Item';
+      const quantity = row.quantity ?? row.qty ?? row.count ?? row.available ?? 0;
+      return { batch_no, item_name, quantity };
+    }
+
+    function escapeHtml(value){
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeCategoryLabel(raw){
+      const value = (raw ?? '').toString().trim();
+      if(!value) return '';
+      const key = value.toLowerCase().replace(/[^a-z]/g, '');
+      return CATEGORY_LABEL_LOOKUP[key] || value;
+    }
+
+    function parseHistoryTimestamp(raw){
+      if(!raw) return 0;
+      const date = new Date(raw);
+      return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+    }
+
+    function normalizeQuantity(raw){
+      const num = Number(raw);
+      return Number.isNaN(num) ? 0 : num;
+    }
+
+    async function fetchItemsForCategory(cat){
+      const url = CATEGORY_ENDPOINT[cat];
+      if(!url) return [];
+      try {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if(!res.ok){
+          console.debug('Inventory request failed', url, res.status);
+          return [];
+        }
+        const json = await res.json();
+        const arr = unwrapArray(json);
+        const items = arr.map(normalizeRow).filter(it => it.batch_no != null);
+        if(items.length === 0){
+          console.debug('Inventory payload (raw)', json);
+        }
+        return items;
+      } catch (e) {
+        console.debug('Inventory fetch error:', e);
+        return [];
+      }
+    }
+
+    async function populateBatches(){
+      const cat = document.getElementById('dist_category').value;
+      const select = document.getElementById('dist_batchNo');
+      const availInfo = document.getElementById('availableInfo');
+      select.innerHTML = '<option value="" disabled selected>Loading...</option>';
+      availInfo.textContent = 'Available: -';
+      const items = await fetchItemsForCategory(cat);
+      if(items.length === 0){
+        select.innerHTML = '<option value="" disabled selected>No items found</option>';
+        return;
+      }
+      select.innerHTML = '<option value="" disabled selected>-- Select item --</option>' +
+        items.map(it => `<option value="${it.batch_no}" data-qty="${it.quantity}">${it.batch_no} — ${it.item_name} (Qty: ${it.quantity})</option>`).join('');
+    }
+
+    document.getElementById('dist_category').addEventListener('change', populateBatches);
+
+    document.getElementById('dist_batchNo').addEventListener('change', function(){
+      const opt = this.selectedOptions && this.selectedOptions[0];
+      const qty = opt ? Number(opt.getAttribute('data-qty')) : null;
+      const availInfo = document.getElementById('availableInfo');
+      const qtyInput = document.getElementById('dist_qty');
+      if(qty != null){
+        availInfo.textContent = 'Available: ' + qty;
+        qtyInput.max = String(qty > 0 ? qty : 1);
+      } else {
+        availInfo.textContent = 'Available: -';
+        qtyInput.removeAttribute('max');
+      }
+    });
+
+    function customAlert(opts){
+      const options = typeof opts === 'string' ? { message: opts } : opts || {};
+      const {
+        title = 'Notice',
+        message = '',
+        type = 'success',
+        buttonText = 'OK'
+      } = options;
+
+      const formattedTitle = escapeHtml(title);
+      const formattedMessage = escapeHtml(message).replace(/\n/g, '<br>');
+      const icons = { success: '✓', error: '✕', warning: '!' };
+      return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-alert-overlay';
+        overlay.innerHTML = `
+          <div class="custom-alert-box ${type}">
+            <div class="custom-alert-icon">${icons[type] || 'i'}</div>
+            <div class="custom-alert-title">${formattedTitle}</div>
+            <div class="custom-alert-message">${formattedMessage}</div>
+            <div class="custom-alert-actions">
+              <button class="custom-alert-btn">${escapeHtml(buttonText)}</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        const btn = overlay.querySelector('.custom-alert-btn');
+        const cleanup = () => {
+          document.removeEventListener('keydown', onKeyDown);
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          resolve();
+        };
+        const onKeyDown = (event) => {
+          if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            cleanup();
+          }
+        };
+
+        btn.addEventListener('click', cleanup);
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) cleanup();
+        });
+        document.addEventListener('keydown', onKeyDown);
+        btn.focus();
+      });
+    }
+
+    let originalHistory = [];
+
+    async function fetchHistory(){
+      try {
+        const res = await fetch('/api/reports/distribution-history');
+        if(!res.ok) throw new Error('Failed to load history');
+        const data = await res.json();
+        originalHistory = (Array.isArray(data) ? data : []).map(item => {
+          const categoryLabel = normalizeCategoryLabel(item.type ?? item.category);
+          const timestamp = parseHistoryTimestamp(item.date ?? item.created_at ?? item.createdAt);
+          const quantity = normalizeQuantity(item.quantity ?? item.qty ?? item.count);
+          return { ...item, __categoryLabel: categoryLabel, __timestamp: timestamp, __quantity: quantity };
+        });
+        applyHistoryFilters();
+      } catch (e) {
+        document.getElementById('historyBody').innerHTML = '<tr><td colspan="10" class="loading">Error loading history</td></tr>';
+      }
+    }
+
+    function applyHistoryFilters(){
+      const searchTerm = document.getElementById('historySearch').value.trim().toLowerCase();
+      const categoryFilter = document.getElementById('historyCategoryFilter').value;
+      const sortOption = document.getElementById('historySort').value;
+
+      const filtered = originalHistory.filter(item => {
+        const categoryLabel = item.__categoryLabel || normalizeCategoryLabel(item.type || item.category);
+        if(categoryFilter && categoryLabel !== categoryFilter) return false;
+        if(!searchTerm) return true;
+        const parts = [
+          item.id,
+          item.batch_no,
+          item.batchNo,
+          item.item_name,
+          item.itemName,
+          item.item,
+          item.recipient,
+          item.distributor,
+          item.notes,
+          categoryLabel
+        ];
+        const haystack = parts.map(v => (v ?? '').toString().toLowerCase()).join(' ');
+        return haystack.includes(searchTerm);
+      });
+
+      const sorted = filtered.sort((a, b) => {
+        const quantityA = a.__quantity ?? normalizeQuantity(a.quantity ?? a.qty ?? 0);
+        const quantityB = b.__quantity ?? normalizeQuantity(b.quantity ?? b.qty ?? 0);
+        const dateA = a.__timestamp ?? parseHistoryTimestamp(a.date || a.created_at || a.createdAt || 0);
+        const dateB = b.__timestamp ?? parseHistoryTimestamp(b.date || b.created_at || b.createdAt || 0);
+        switch (sortOption) {
+          case 'date_asc': return dateA - dateB;
+          case 'quantity_desc': return quantityB - quantityA;
+          case 'quantity_asc': return quantityA - quantityB;
+          case 'date_desc':
+          default: return dateB - dateA;
+        }
+      });
+
+      renderHistory(sorted);
+    }
+
+    function renderHistory(rows){
+      const body = document.getElementById('historyBody');
+      if(!rows.length){
+        body.innerHTML = '<tr><td colspan="10" class="loading">No records</td></tr>';
+        return;
+      }
+      body.innerHTML = rows.map(r => {
+        const categoryLabel = r.__categoryLabel || normalizeCategoryLabel(r.type ?? r.category) || '-';
+        const batchNo = r.batch_no ?? r.batchNo ?? '-';
+        const itemName = r.item_name ?? r.itemName ?? r.item ?? '-';
+        const quantityValue = r.quantity ?? r.qty ?? r.__quantity ?? '-';
+        const distributor = r.distributor ?? '-';
+        const recipient = r.recipient ?? '-';
+        const contact = r.contact ?? '-';
+        const notes = r.notes ?? '-';
+        const timestamp = r.__timestamp ?? parseHistoryTimestamp(r.date ?? r.created_at ?? r.createdAt);
+        const dateText = timestamp ? new Date(timestamp).toLocaleString() : '-';
+        return `
+          <tr>
+            <td>${escapeHtml(r.id ?? '-')}</td>
+            <td>${escapeHtml(categoryLabel)}</td>
+            <td>${escapeHtml(batchNo)}</td>
+            <td>${escapeHtml(itemName)}</td>
+            <td>${escapeHtml(quantityValue)}</td>
+            <td>${escapeHtml(distributor)}</td>
+            <td>${escapeHtml(recipient)}</td>
+            <td>${escapeHtml(contact)}</td>
+            <td>${escapeHtml(notes)}</td>
+            <td>${escapeHtml(dateText)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    const historySearchInput = document.getElementById('historySearch');
+    const historyCategorySelect = document.getElementById('historyCategoryFilter');
+    const historySortSelect = document.getElementById('historySort');
+    if(historySearchInput) historySearchInput.addEventListener('input', applyHistoryFilters);
+    if(historyCategorySelect) historyCategorySelect.addEventListener('change', applyHistoryFilters);
+    if(historySortSelect) historySortSelect.addEventListener('change', applyHistoryFilters);
+
+    document.getElementById('distributionForm').addEventListener('submit', async function(e){
+      // Validate selected batch available quantity
+      const sel = document.getElementById('dist_batchNo');
+      const opt = sel && sel.selectedOptions && sel.selectedOptions[0];
+      const available = opt ? Number(opt.getAttribute('data-qty')) : null;
+      const qtyVal = Number(document.getElementById('dist_qty').value);
+      if(available != null && qtyVal > available){
+        e.preventDefault();
+        await customAlert({
+          type: 'warning',
+          title: 'Cannot Distribute',
+          message: 'Quantity exceeds available stock (' + available + ').'
+        });
+        return;
+      }
+      e.preventDefault();
+      const payload = {
+        category: document.getElementById('dist_category').value,
+        batchNo: Number(document.getElementById('dist_batchNo').value),
+        quantity: Number(document.getElementById('dist_qty').value),
+        recipient: document.getElementById('dist_recipient').value || undefined,
+        contact: document.getElementById('dist_contact').value || undefined,
+        notes: document.getElementById('dist_notes').value || undefined,
+      };
+      try {
+        const res = await fetch('/api/inventory/distribute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if(!res.ok){
+          await customAlert({
+            type: 'error',
+            title: 'Distribution Failed',
+            message: data.error || 'Distribution failed'
+          });
+        } else {
+          closeModal();
+          await customAlert({
+            type: 'success',
+            title: 'Distribution Successful',
+            message: 'Distributed successfully. New quantity: ' + data.newQuantity
+          });
+          fetchHistory();
+        }
+      } catch (err) {
+        await customAlert({
+          type: 'error',
+          title: 'Network Error',
+          message: 'Please check your connection and try again.'
+        });
+      }
+    });
+
+    // Modal open/close wiring
+    const openBtn = document.getElementById('openDistModal');
+    const modal = document.getElementById('distModal');
+    const closeBtn = document.getElementById('closeDistModal');
+    const cancelBtn = document.getElementById('cancelDist');
+
+    function openModal(){
+      if(!modal) return;
+      modal.style.display = 'flex';
+      populateBatches();
+      const first = document.getElementById('dist_category');
+      if (first) first.focus();
+    }
+    function closeModal(){
+      if(!modal) return;
+      modal.style.display = 'none';
+      const form = document.getElementById('distributionForm');
+      if (form) form.reset();
+      const avail = document.getElementById('availableInfo');
+      if (avail) avail.textContent = 'Available: -';
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' });
+        } catch (err) {
+          console.debug('Logout failed, forcing redirect', err);
+        } finally {
+          window.location.href = '/login';
+        }
+      });
+    }
+
+    // Initialize default category items and history
+    populateBatches();
+    fetchHistory();
+
+    // If account.js exposes current user, reflect distributor name
+    if (window.currentUser && window.currentUser.username) {
+      const inp = document.getElementById('dist_distributor');
+      if (inp) inp.value = window.currentUser.username;
+    }
+  </script>
+  <script src="/js/account.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hygiene & Sanitation - E-READY</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/images/emergency-kit.png" alt="Logo" onerror="this.style.display='none'">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/dashboard" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+
+      <button type="button" class="menu-item has-children open" id="menu-emergency">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 7V5a3 3 0 013-3h4a3 3 0 013 3v2h3a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2h3zm2-2v2h6V5a1 1 0 00-1-1h-4a1 1 0 00-1 1z"/>
+          <path fill="#ffffff" d="M11 11v2H9a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2v-2a1 1 0 00-2 0z"/>
+        </svg>
+        <span>Emergency Stocks</span>
+        <svg class="chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M8 10l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <div class="submenu" id="submenu-emergency" style="display:block;">
+        <a href="/inventory/food-water" class="submenu-item">Food & Water</a>
+        <a href="/inventory/medicine" class="submenu-item">Medicine & First Aid</a>
+        <a href="/inventory/hygiene" class="submenu-item active">Hygiene & Sanitation</a>
+        <a href="/inventory/clothes-beddings" class="submenu-item">Clothes & Beddings</a>
+        <a href="/inventory/tools-lights" class="submenu-item">Tools & Lights</a>
+      </div>
+
+      <a href="/distribution" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M3 3h11a1 1 0 0 1 1 1v4h3l3 4v6h-1a3 3 0 1 1-6 0H9a3 3 0 1 1-6 0H2V4a1 1 0 0 1 1-1zm1 2v8h10V5H4zm12 5v3h4v-1.586L18.586 10H16zm-8 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm10 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <span>Distribution</span>
+      </a>
+
+      <a href="/about" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>About us</span>
+      </a>
+    </nav>
+
+    <button id="logoutBtn" class="btn-logout">Log Out</button>
+  </div>
+
+  <div class="main-content">
+    <div id="alert-container"></div>
+
+    <h1 class="page-title">Hygiene & Sanitation Inventory</h1>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="sort-wrapper">
+          <svg class="sort-icon" viewBox="0 0 24 24" width="18" height="18">
+            <path fill="currentColor" d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+          </svg>
+          <select id="sortSelect">
+            <option value="batch_no">Sort by Batch No</option>
+            <option value="item_name">Sort by Item Name</option>
+            <option value="category">Sort by Category</option>
+            <option value="expiration_date">Sort by Expiration</option>
+            <option value="days_until_expiry">Sort by Days Until Expiry</option>
+          </select>
+        </div>
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18">
+            <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search items...">
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-action" onclick="showAddModal()">Add Item</button>
+        <button class="btn-action" onclick="showImportModal()">Import CSV</button>
+        <button class="btn-action" onclick="exportData('csv')">Export CSV</button>
+        <button class="btn-action" onclick="exportData('json')">Export JSON</button>
+        <button class="btn-action" onclick="exportData('xml')">Export XML</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table id="inventoryTable">
+        <thead>
+          <tr>
+            <th>Batch No</th>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Unit / Type</th>
+            <th>Location</th>
+            <th>Person In-Charge</th>
+            <th>Manufactured Date</th>
+            <th>Expiration Date</th>
+            <th>Days Until Expiry</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryBody">
+          <tr>
+            <td colspan="12" class="loading">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="itemModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle">Add New Item</h2>
+      <form id="itemForm">
+        <input type="hidden" id="itemId">
+        <div class="form-group">
+          <label for="item_name">Item Name</label>
+          <input type="text" id="item_name" required>
+        </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" required>
+            <option value="Hygiene">Hygiene</option>
+            <option value="Sanitation">Sanitation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" min="0" required>
+        </div>
+        <div class="form-group">
+          <label for="unit_type">Unit / Type</label>
+          <input type="text" id="unit_type" placeholder="e.g., bar, bottle, pack, ml">
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" required>
+        </div>
+        <div class="form-group">
+          <label for="person_in_charge">Person In-Charge</label>
+          <input type="text" id="person_in_charge" placeholder="e.g., Juan Dela Cruz">
+        </div>
+        <div class="form-group">
+          <label for="manufactured_date">Manufactured Date</label>
+          <input type="date" id="manufactured_date">
+        </div>
+        <div class="form-group">
+          <label for="expiration_date">Expiration Date</label>
+          <input type="date" id="expiration_date" required>
+        </div>
+        <button type="submit" class="btn-save">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div id="importModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeImportModal()">&times;</span>
+      <h2>Import CSV File</h2>
+      <form id="importForm">
+        <div class="form-group">
+          <label for="csvFile">Select CSV File</label>
+          <input type="file" id="csvFile" accept=".csv" required>
+        </div>
+        <button type="submit" class="btn-save">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var btn = document.getElementById('menu-emergency');
+      var submenu = document.getElementById('submenu-emergency');
+      if(btn && submenu){
+        btn.addEventListener('click', function(){
+          var open = submenu.style.display !== 'none';
+          submenu.style.display = open ? 'none' : 'block';
+          btn.classList.toggle('open', !open);
+        });
+      }
+    })();
+  </script>
+  <script src="/js/account.js"></script>
+  <script src="/js/hygiene.js"></script>
+</body>
+</html>

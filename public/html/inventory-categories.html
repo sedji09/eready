@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Stocks - Categories</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .categories-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px; padding: 20px; }
+    .category-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 20px; text-align: center; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+    .category-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+    .category-card img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 12px; }
+    .category-card .label { display: inline-block; background: #8e1f1f; color: #fff; padding: 8px 14px; border-radius: 999px; font-weight: 600; }
+    .page-title { margin: 24px 20px 8px; }
+    .subtitle { margin: 0 20px 12px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="/images/emergency-kit.png" alt="Logo" onerror="this.style.display='none'">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/dashboard" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+
+      <button type="button" class="menu-item has-children" id="menu-emergency">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 7V5a3 3 0 013-3h4a3 3 0 013 3v2h3a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2h3zm2-2v2h6V5a1 1 0 00-1-1h-4a1 1 0 00-1 1z"/>
+          <path fill="#ffffff" d="M11 11v2H9a1 1 0 000 2h2v2a1 1 0 002 0v-2h2a1 1 0 000-2h-2v-2a1 1 0 00-2 0z"/>
+        </svg>
+        <span>Emergency Stocks</span>
+        <svg class="chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M8 10l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <div class="submenu" id="submenu-emergency" style="display:block;">
+        <a href="/inventory/food-water" class="submenu-item">Food & Water</a>
+        <a href="/inventory/medicine" class="submenu-item">Medicine & First Aid</a>
+        <a href="/inventory/hygiene" class="submenu-item">Hygiene & Sanitation</a>
+        <a href="/inventory/clothes-beddings" class="submenu-item">Clothes & Beddings</a>
+        <a href="/inventory/tools-lights" class="submenu-item">Tools & Lights</a>
+      </div>
+
+      <a href="/distribution" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M3 3h11a1 1 0 0 1 1 1v4h3l3 4v6h-1a3 3 0 1 1-6 0H9a3 3 0 1 1-6 0H2V4a1 1 0 0 1 1-1zm1 2v8h10V5H4zm12 5v3h4v-1.586L18.586 10H16zm-8 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm10 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+        <span>Distribution</span>
+      </a>
+
+      <a href="/about" class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>About us</span>
+      </a>
+    </nav>
+
+    <button id="logoutBtn" class="btn-logout">Log Out</button>
+  </div>
+
+  <div class="main-content">
+    <h1 class="page-title">Emergency Stocks</h1>
+    <p class="subtitle">Choose a category</p>
+
+    <div class="categories-container">
+      <div class="category-card" data-link="/inventory/food-water">
+        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Food & Water">
+          <rect x="10" y="70" width="100" height="35" rx="8" fill="#cfe8ff"/>
+          <circle cx="40" cy="55" r="18" fill="#ffd6a5"/>
+          <rect x="62" y="40" width="22" height="30" rx="4" fill="#a5d8ff"/>
+          <rect x="66" y="36" width="14" height="6" rx="2" fill="#74c0fc"/>
+          <rect x="20" y="76" width="20" height="12" rx="2" fill="#ffa94d"/>
+        </svg>
+        <div class="label">Food & Water</div>
+      </div>
+
+      <div class="category-card" data-link="/inventory/medicine">
+        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Medicine & First Aid">
+          <rect x="18" y="46" width="84" height="56" rx="10" fill="#ffe3e3"/>
+          <rect x="45" y="30" width="30" height="22" rx="6" fill="#ffa8a8"/>
+          <rect x="56" y="34" width="8" height="14" rx="2" fill="#ff6b6b"/>
+          <rect x="52" y="62" width="16" height="40" rx="3" fill="#ff8787"/>
+          <rect x="34" y="70" width="52" height="12" rx="4" fill="#ff6b6b"/>
+          <rect x="56" y="64" width="8" height="8" fill="#fff"/>
+          <rect x="52" y="68" width="16" height="4" fill="#ff6b6b"/>
+        </svg>
+        <div class="label">Medicine & First Aid</div>
+      </div>
+
+      <div class="category-card" data-link="/inventory/hygiene">
+        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Hygiene & Sanitation">
+          <rect x="20" y="40" width="26" height="60" rx="6" fill="#d0ebff"/>
+          <rect x="26" y="28" width="14" height="14" rx="4" fill="#74c0fc"/>
+          <rect x="52" y="35" width="22" height="65" rx="8" fill="#b2f2bb"/>
+          <rect x="80" y="48" width="20" height="52" rx="6" fill="#ffd8a8"/>
+          <circle cx="90" cy="44" r="8" fill="#ffa94d"/>
+        </svg>
+        <div class="label">Hygiene & Sanitation</div>
+      </div>
+
+      <div class="category-card" data-link="/inventory/clothes-beddings">
+        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Clothes & Beddings">
+          <rect x="18" y="64" width="84" height="34" rx="8" fill="#e5dbff"/>
+          <rect x="22" y="58" width="76" height="14" rx="6" fill="#d0bfff"/>
+          <rect x="26" y="52" width="68" height="12" rx="6" fill="#9775fa"/>
+          <rect x="30" y="46" width="60" height="10" rx="5" fill="#845ef7"/>
+        </svg>
+        <div class="label">Clothes & Beddings</div>
+      </div>
+
+      <div class="category-card" data-link="/inventory/tools-lights">
+        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-label="Tools & Lights">
+          <rect x="16" y="72" width="88" height="22" rx="6" fill="#ffd8a8"/>
+          <rect x="20" y="46" width="20" height="30" rx="4" fill="#ffc078"/>
+          <rect x="44" y="50" width="36" height="10" rx="4" fill="#ffa94d"/>
+          <rect x="82" y="40" width="10" height="32" rx="3" fill="#868e96"/>
+          <circle cx="87" cy="36" r="8" fill="#ffa94d"/>
+        </svg>
+        <div class="label">Tools & Lights</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var btn = document.getElementById('menu-emergency');
+      var submenu = document.getElementById('submenu-emergency');
+      if(btn && submenu){
+        btn.addEventListener('click', function(){
+          var open = submenu.style.display !== 'none';
+          submenu.style.display = open ? 'none' : 'block';
+          btn.classList.toggle('open', !open);
+        });
+      }
+    })();
+  </script>
+  <script src="/js/account.js"></script>
+  <script src="/js/inventory-categories.js"></script>
+</body>
+</html>
