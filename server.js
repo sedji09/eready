@@ -21,16 +21,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Serve uploaded files (e.g., avatars)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-/* -------------------------------------------------------------
-   SESSION CONFIG – ONLY CHANGE NEEDED
-   ------------------------------------------------------------- */
+const MySQLStore = require('express-mysql-session')(session);
+const sessionStore = new MySQLStore({
+  clearExpired: true,
+  checkExpirationInterval: 900000,
+  expiration: 86400000,
+  createDatabaseTable: true,
+  schema: {
+    tableName: 'sessions'
+  }
+}, db.pool || db);
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'eready-secret-key-2025-do-not-share', // fallback
+  name: 'eready_session',
+  secret: process.env.SESSION_SECRET || 'eready-secret-key-2025-do-not-share',
+  store: sessionStore,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,                     // <-- important for http://localhost
-    maxAge: 1000 * 60 * 60 * 24        // 1 day
+    secure: 'auto',
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 24
   }
 }));
 

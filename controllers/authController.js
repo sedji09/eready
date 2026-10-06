@@ -64,11 +64,14 @@ const register = async (req, res) => {
       email: email
     };
 
-    res.status(201).json({
-      success: true,
-      message: 'User registered successfully!',
-      userId: result.insertId,
-      redirect: '/dashboard'
+    req.session.save((err) => {
+      if (err) console.error('Session save error on register:', err);
+      res.status(201).json({
+        success: true,
+        message: 'User registered successfully!',
+        userId: result.insertId,
+        redirect: '/dashboard'
+      });
     });
   } catch (error) {
     console.error('Register error:', error);
@@ -103,10 +106,16 @@ const login = async (req, res) => {
       email: user.email
     };
 
-    res.json({
-      success: true,
-      message: 'Login successful',
-      redirect: '/dashboard'
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error on login:', err);
+        return res.status(500).json({ success: false, message: 'Session save error' });
+      }
+      res.json({
+        success: true,
+        message: 'Login successful',
+        redirect: '/dashboard'
+      });
     });
   } catch (error) {
     console.error('Login error:', error);
