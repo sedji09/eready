@@ -10,10 +10,16 @@ isAuthenticated = typeof authModule === 'function'
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
 
+const os = require('os');
+
 // Ensure avatar upload directory exists
-const avatarsDir = path.join(__dirname, '../uploads/avatars');
-if (!fs.existsSync(avatarsDir)) {
-  fs.mkdirSync(avatarsDir, { recursive: true });
+const avatarsDir = process.env.VERCEL ? path.join(os.tmpdir(), 'uploads/avatars') : path.join(__dirname, '../uploads/avatars');
+try {
+  if (!fs.existsSync(avatarsDir)) {
+    fs.mkdirSync(avatarsDir, { recursive: true });
+  }
+} catch (e) {
+  // Ignored in read-only environment
 }
 
 // Multer setup for avatar images
